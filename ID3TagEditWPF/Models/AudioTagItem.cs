@@ -120,7 +120,15 @@ namespace ID3TagEditWPF.Models
             }
         }
 
-        public System.Windows.Controls.Image AlbumCover
+        public System.Drawing.Image AlbumCoverThumbnail
+        {
+            get
+            {
+                return this.AlbumCover.GetThumbnailImage(100, 100, null, IntPtr.Zero);
+            }
+        }
+
+        public System.Drawing.Image AlbumCover
         {
             get
             {
@@ -132,20 +140,10 @@ namespace ID3TagEditWPF.Models
 
                 try
                 {
-
                     var bin = (byte[])(file.Tag.Pictures[0].Data.Data);
                     var mem = new MemoryStream();
                     new MemoryStream(bin).CopyTo(mem);
-
-                    var imageSource = new BitmapImage();
-                    imageSource.BeginInit();
-                    imageSource.StreamSource = mem;
-                    imageSource.EndInit();
-
-                    var image = new System.Windows.Controls.Image();
-                    image.Source = imageSource;
-
-                    return image;
+                    return Image.FromStream(mem);
                 }
                 catch (Exception)
                 {
@@ -156,20 +154,14 @@ namespace ID3TagEditWPF.Models
             {
                 if (this.file != null && this.file.Tag != null)
                 {
-                    var bmpsource = value.Source as BitmapImage;
-                    byte[] data;
-                    using (var mem = new MemoryStream())
-                    {
-                        var encoder = new BmpBitmapEncoder();
-                        encoder.Frames.Add(BitmapFrame.Create(bmpsource));
-                        encoder.Save(mem);
-                        data = mem.ToArray();
-                    }
-                    ByteVector bv = new ByteVector(data);
+                    var mem = new MemoryStream();
+                    value.Save(mem, System.Drawing.Imaging.ImageFormat.Bmp);
+                    ByteVector bv = new ByteVector(mem.GetBuffer());
                     var pic = new Picture(bv);
                     this.file.Tag.Pictures = new IPicture[] { pic };
                     this.file.Save();
                     this.RaisePropertyChanged();
+                    this.RaisePropertyChanged(nameof(this.AlbumCoverThumbnail));
                 }
             }
         }

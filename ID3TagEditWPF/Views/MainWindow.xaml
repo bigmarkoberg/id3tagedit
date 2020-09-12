@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ID3TagEditWPF.Views"
         xmlns:vm="clr-namespace:ID3TagEditWPF.ViewModels"
+        xmlns:conv="clr-namespace:ID3TagEditWPF.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainModel />
     </Window.DataContext>
+    <Window.Resources>
+        <conv:ImageConverter x:Key="imageConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -18,10 +22,22 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="True" 
-                  CanUserReorderColumns="False" CanUserDeleteRows="True"
-                  CanUserAddRows="False" CanUserResizeRows="False"
-                  CanUserResizeColumns="True" BeginningEdit="DataGrid_BeginningEdit" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" />
+        <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" BeginningEdit="DataGrid_BeginningEdit">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
+                <DataGridTextColumn Header="Album" Binding="{Binding Album}" />
+                <DataGridTextColumn Header="Track" Binding="{Binding Track}" />
+                <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
+                <DataGridTemplateColumn Width="SizeToCells" Header="Cover">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding AlbumCover, Converter={StaticResource imageConverter}}" Stretch="None" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
         <Button Grid.Row="1" Content="Add" HorizontalAlignment="Left" Command="{Binding AddCommand}" Margin="5" Padding="5"/>
     </Grid>
 </Window>
