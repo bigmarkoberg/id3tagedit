@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Windows.Media.Imaging;
 using TagLib;
 
 namespace ID3TagEditWPF.Models
@@ -124,7 +123,25 @@ namespace ID3TagEditWPF.Models
         {
             get
             {
-                return this.AlbumCover.GetThumbnailImage(100, 100, null, IntPtr.Zero);
+                const int LARGEST = 75;
+                var image = this.AlbumCover;
+                var w = image.Width;
+                var h = image.Height;
+
+                if (w >= h)
+                {
+                    // w/h = LARGEST/nh
+                    h = LARGEST * h / w;
+                    w = LARGEST;
+                }
+                else
+                {
+                    // w/h = mw/LARGEST
+                    w = LARGEST * w / h;
+                    h = LARGEST;
+                }
+
+                return image.GetThumbnailImage(w, h, null, IntPtr.Zero);
             }
         }
 
