@@ -20,6 +20,14 @@ namespace ID3TagEditWPF.Models
             this.file = tagFile;
         }
 
+        public string Path
+        {
+            get
+            {
+                return this.file?.Name;
+            }
+        }
+
         public string Title
         {
             get

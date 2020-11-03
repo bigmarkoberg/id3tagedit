@@ -1,4 +1,5 @@
 ﻿using ID3TagEditWPF.Models;
+using ID3TagEditWPF.ViewModels;
 using Microsoft.Win32;
 using System;
 using System.Windows;
@@ -39,6 +40,11 @@ namespace ID3TagEditWPF.Views
             catch (Exception)
             {
             }
+        }
+
+        private void id3Data_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var model = this.DataContext as MainModel;            
         }
     }
 }

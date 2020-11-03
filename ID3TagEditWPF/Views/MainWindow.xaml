@@ -22,7 +22,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" BeginningEdit="DataGrid_BeginningEdit">
+        <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" BeginningEdit="DataGrid_BeginningEdit" x:Name="id3Data" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
                 <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" />
@@ -36,8 +36,14 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Path" Binding="{Binding Path, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Row="1" Content="Add" HorizontalAlignment="Left" Command="{Binding AddCommand}" Margin="5" Padding="5"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Content="Add" HorizontalAlignment="Left" Command="{Binding AddCommand}" Margin="5" Padding="5"/>
+            <Button Content="Align Track" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=id3Data, Path=SelectedItems}" Command="{Binding AlignTrackNumberCommand}"  Margin="5" Padding="5"/>
+            <Button Content="Align Title" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=id3Data, Path=SelectedItems}" Command="{Binding AlignTitleCommand}"  Margin="5" Padding="5"/>
+            <Button Content="Align Cover" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=id3Data, Path=SelectedItems}" Command="{Binding AlignImageCommand}"  Margin="5" Padding="5"/>
+        </StackPanel>
     </Grid>
 </Window>
