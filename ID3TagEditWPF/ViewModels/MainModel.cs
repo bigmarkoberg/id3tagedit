@@ -17,12 +17,14 @@ namespace ID3TagEditWPF.ViewModels
             this.AddCommand = new DelegateCommand(this.Add, this.CanAdd);
             this.AlignTrackNumberCommand = new DelegateCommand<object>(this.AlignTrackNumber, this.CanAlignTrackNumber);
             this.AlignTitleCommand = new DelegateCommand<object>(this.AlignTitle, this.CanAlignTitle);
+            this.AlignTitleCustomCommand = new DelegateCommand<object>(this.AlignTitleCustom, this.CanAlignTitleCustom);
             this.AlignImageCommand = new DelegateCommand<object>(this.AlignImage, this.CanAlignImage);
         }
 
         public DelegateCommand AddCommand { get; }
         public DelegateCommand<object> AlignTrackNumberCommand { get; }
         public DelegateCommand<object> AlignTitleCommand { get; }
+        public DelegateCommand<object> AlignTitleCustomCommand { get; }
         public DelegateCommand<object> AlignImageCommand { get; }
 
         private bool CanAlignImage(object param)
@@ -59,6 +61,41 @@ namespace ID3TagEditWPF.ViewModels
                 }
 
                 tag.AlbumCover = System.Drawing.Image.FromFile(open.FileName);
+            }
+        }
+
+        private bool CanAlignTitleCustom(object param)
+        {
+            return true;
+        }
+
+        private void AlignTitleCustom(object param)
+        {
+            var list = param as IList;
+            if (list == null || list.Count <= 0)
+            {
+                return;
+            }
+
+            var value = Microsoft.VisualBasic.Interaction.InputBox(
+                "Custom Title",
+                string.Empty,
+                (list[0] as AudioTagItem)?.Title ?? string.Empty);
+
+            foreach (var item in this.Items)
+            {
+                var tag = item as AudioTagItem;
+                if (tag == null)
+                {
+                    continue;
+                }
+
+                if (!list.Contains(item))
+                {
+                    continue;
+                }
+
+                tag.Title = value + " " + tag.Track;
             }
         }
 
@@ -120,7 +157,8 @@ namespace ID3TagEditWPF.ViewModels
                     continue;
                 }
 
-                if (!list.Contains(item)) {
+                if (!list.Contains(item))
+                {
                     continue;
                 }
 
